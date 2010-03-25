@@ -2,7 +2,7 @@
  * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
  */options{  JDK_VERSION = "1.5";  static = true;}PARSER_BEGIN(javinha)package foo2;
 
-public class javinha{  public static void main(String args []) throws ParseException  {    javinha parser = new javinha(System.in);    while (true)    {      System.out.println("Reading from standard inputE...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (javinha.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        javinha.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(javinha)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < AND : "&&" >
+public class javinha{  public static void main(String args []) throws ParseException  {    javinha parser = new javinha(System.in);    while (true)    {      System.out.println("Reading from standard inputES...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (javinha.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        javinha.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(javinha)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < AND : "&&" >
 | < LTHEN : "<" >}
 TOKEN : //Class
 {
@@ -15,4 +15,120 @@ TOKEN:
 {
   	< ID : ((< LIT >)(< LIT > | "_" | < DIGIT >)*)+>
 	| < #LIT : (([ "A"-"Z" ]) | (["a"-"z"]))+ >}
-int one_line() :{}{  sum() ";"  {    return 0;  }| ";"  {    return 1;  }}void sum() :{}{  term()  (    (      < PLUS >    | < MINUS >    )    term()  )*}void term() :{}{  unary()  (    (      < MULTIPLY >    )    unary()  )*}void unary() :{}{  < MINUS > element()| element()}void element() :{}{  < INTEGER_LITERAL >| "(" sum() ")"}
+TOKEN:
+{
+  < INT : "int" >}
+
+TOKEN:
+{
+  < BOOLEAN : "boolean" >
+}
+
+TOKEN:
+{
+  < WHILE : "while" >}
+
+TOKEN:
+{
+  < IF : "if" >
+}
+
+TOKEN:
+{
+  < ELSE : "else" >
+}
+int Program() :{}{  MainClass() ( ClassDecl() )* ";"
+  {
+    return 0;
+  }
+| ";"
+  {
+    return 1;
+  }}void MainClass() :{}{  < CLASS > < ID > "{ public static void main ( String []" < ID > ")"
+               "{" Statement() "}""}"}
+void ClassDecl() :
+{}
+{
+  < CLASS > < ID > ("{" ( VarDecl() )* ( MethodDecl() )* "}") |
+  < CLASS > < ID > < EXTENDS > <ID > "{" ( VarDecl() )* ( MethodDecl() )* "}"
+  
+
+}
+
+void VarDecl():
+{}
+{				   Type()< ID >";"
+}
+
+void MethodDecl():
+{}
+{	   "public" Type() < ID > "(" FormalList() ")"
+               "{" ( VarDecl() )* ( Statement() )* "return" Expression()";""}"             
+}
+
+void FormalList():
+{}
+{	   Type()< ID > ( FormalRest() )*
+}
+
+void FormalRest():
+{}
+{
+	   ","Type()< ID > |
+	   ""
+}
+
+void Type():
+{}
+{   < INT > "[""]" |
+   < BOOLEAN > |
+   < INT >|
+   < ID >
+}
+
+void Statement():
+{}
+{  "{" ( Statement() )* "}" |
+  < IF > "(" Expression() ")" Statement() < ELSE > Statement() |
+  < WHILE > "(" Expression() ")" Statement() |
+  "System.out.println" "(" Exp() ")" ";" |
+  < ID > "=" Expression()";" |
+  < ID > "[" Expression() "]" "=" Expression()";"
+}
+
+void Expression():
+{}
+{
+  Expression() Exp()}  
+
+
+void Exp():
+{}
+{
+   (< PLUS > | < MINUS > | < MULTIPLY> | < AND > | < LTHEN >)+ Exp() |
+   Exp() "[" Exp() "]" |
+   Exp()"." "length" |
+   Exp()"." <ID > "(" ExpList()")" |
+   < INTEGER_LITERAL >
+   "true" |
+   "false" |
+   < ID > |
+   "this" |
+   "new" < INT > "[" Exp() "]" |
+   "new" < ID > "("")" |
+   "!" Exp() |
+   "(" Exp()")" |
+   ""   
+  }
+
+void ExpList():
+{}
+{
+	   Expression() ( ExpRest() )* |
+   "" }
+
+void ExpRest():
+{}
+{
+   "," Expression()
+     }
