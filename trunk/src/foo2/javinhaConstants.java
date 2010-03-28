@@ -21,17 +21,45 @@ public interface javinhaConstants {
   /** RegularExpression Id. */
   int LTHEN = 9;
   /** RegularExpression Id. */
-  int CLASS = 10;
+  int LENGHT = 10;
   /** RegularExpression Id. */
-  int EXTENDS = 11;
+  int CLASS = 11;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 12;
+  int PUBLIC = 12;
   /** RegularExpression Id. */
-  int DIGIT = 13;
+  int EXTENDS = 13;
   /** RegularExpression Id. */
-  int ID = 14;
+  int THIS = 14;
   /** RegularExpression Id. */
-  int LIT = 15;
+  int NEW = 15;
+  /** RegularExpression Id. */
+  int INTEGER_LITERAL = 16;
+  /** RegularExpression Id. */
+  int DIGIT = 17;
+  /** RegularExpression Id. */
+  int BOOL = 18;
+  /** RegularExpression Id. */
+  int ID = 19;
+  /** RegularExpression Id. */
+  int LIT = 20;
+  /** RegularExpression Id. */
+  int INT = 21;
+  /** RegularExpression Id. */
+  int LPAREN = 22;
+  /** RegularExpression Id. */
+  int RPAREN = 23;
+  /** RegularExpression Id. */
+  int LBRACK = 24;
+  /** RegularExpression Id. */
+  int RBRACK = 25;
+  /** RegularExpression Id. */
+  int BOOLEAN = 26;
+  /** RegularExpression Id. */
+  int WHILE = 27;
+  /** RegularExpression Id. */
+  int IF = 28;
+  /** RegularExpression Id. */
+  int ELSE = 29;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -48,15 +76,37 @@ public interface javinhaConstants {
     "\"*\"",
     "\"&&\"",
     "\"<\"",
+    "\"lenght\"",
     "\"class\"",
+    "\"public\"",
     "\"extends\"",
+    "\"this\"",
+    "\"new\"",
     "<INTEGER_LITERAL>",
     "<DIGIT>",
+    "<BOOL>",
     "<ID>",
     "<LIT>",
-    "\";\"",
+    "\"int\"",
     "\"(\"",
     "\")\"",
+    "\"[\"",
+    "\"]\"",
+    "\"boolean\"",
+    "\"while\"",
+    "\"if\"",
+    "\"else\"",
+    "\";\"",
+    "\"{ public static void main ( String []\"",
+    "\"{\"",
+    "\"}\"",
+    "\"\"",
+    "\"return\"",
+    "\",\"",
+    "\"System.out.println\"",
+    "\"=\"",
+    "\".\"",
+    "\"!\"",
   };
 
 }
