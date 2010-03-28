@@ -3,14 +3,33 @@
  */options{  JDK_VERSION = "1.5";  static = true;}PARSER_BEGIN(javinha)package foo2;
 
 public class javinha{  public static void main(String args []) throws ParseException  {    javinha parser = new javinha(System.in);    while (true)    {      System.out.println("Reading from standard inputES...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (javinha.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        javinha.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(javinha)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < AND : "&&" >
-| < LTHEN : "<" >}
+| < LTHEN : "<" >}
+
+TOKEN :
+{
+  	< LENGHT : "lenght" >} 
 TOKEN : //Class
 {
   <  CLASS : "class" >
 }
+
+TOKEN :
+{
+  < PUBLIC : "public">}
+
 TOKEN:{  <  EXTENDS : "extends" >}
 
-TOKEN : //integers{  < INTEGER_LITERAL : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >}
+TOKEN:{
+  	< THIS : "this" >}
+
+TOKEN:{
+  < NEW : "new" >}
+
+TOKEN : //integers{  < INTEGER_LITERAL : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >}
+
+TOKEN: //boolean values
+{
+  < BOOL : "true" | "false" >}
 TOKEN:
 {
   	< ID : ((< LIT >)(< LIT > | "_" | < DIGIT >)*)+>
@@ -18,6 +37,25 @@ TOKEN:
 TOKEN:
 {
   < INT : "int" >}
+
+TOKEN:
+{
+  < LPAREN : "(" >}
+
+TOKEN:
+{
+  < RPAREN : ")" >
+}
+
+TOKEN:
+{
+  < LBRACK: "[" >
+}
+
+TOKEN:
+{
+  < RBRACK : "]" >
+}
 
 TOKEN:
 {
@@ -49,26 +87,26 @@ TOKEN:
 void ClassDecl() :
 {}
 {
-  < CLASS > < ID > ("{" ( VarDecl() )* ( MethodDecl() )* "}") |
-  < CLASS > < ID > < EXTENDS > <ID > "{" ( VarDecl() )* ( MethodDecl() )* "}"
+  //< CLASS > < ID > ("{" ( VarDecl() )* ( MethodDecl() )* "}") |
+  < CLASS > < ID > (< EXTENDS > | "" ) <ID > "{" ( VarDecl() )* ( MethodDecl() )* "}"
   
 
 }
 
 void VarDecl():
 {}
-{				   Type()< ID >";"
+{				   Type() < ID > ";"
 }
 
 void MethodDecl():
 {}
-{	   "public" Type() < ID > "(" FormalList() ")"
+{	   < PUBLIC > Type() < ID > < LPAREN > FormalList() < RPAREN > 
                "{" ( VarDecl() )* ( Statement() )* "return" Expression()";""}"             
 }
 
 void FormalList():
 {}
-{	   Type()< ID > ( FormalRest() )*
+{	   Type() < ID > ( FormalRest() )*
 }
 
 void FormalRest():
@@ -80,46 +118,51 @@ void FormalRest():
 
 void Type():
 {}
-{   < INT > "[""]" |
+{   < INT > ("[""]" | "") |
    < BOOLEAN > |
-   < INT >|
+   //< INT > |
    < ID >
 }
 
 void Statement():
 {}
 {  "{" ( Statement() )* "}" |
-  < IF > "(" Expression() ")" Statement() < ELSE > Statement() |
-  < WHILE > "(" Expression() ")" Statement() |
+  < IF > < LPAREN > Expression() < RPAREN > Statement() < ELSE > Statement() |
+  < WHILE > < LPAREN > Expression() < RPAREN >  Statement() |
   "System.out.println" "(" Exp() ")" ";" |
-  < ID > "=" Expression()";" |
-  < ID > "[" Expression() "]" "=" Expression()";"
+  < ID > ("[" Expression() "]" | "" ) "=" Expression()";"
+  //< ID > "=" Expression()";" |
+  //< ID > "[" Expression() "]" "=" Expression()";"
 }
 
 void Expression():
 {}
 {
-  Expression() Exp()}  
+  Term() Exp()}  
 
 
 void Exp():
 {}
 {
-   (< PLUS > | < MINUS > | < MULTIPLY> | < AND > | < LTHEN >)+ Exp() |
-   Exp() "[" Exp() "]" |
-   Exp()"." "length" |
-   Exp()"." <ID > "(" ExpList()")" |
-   < INTEGER_LITERAL >
-   "true" |
-   "false" |
-   < ID > |
-   "this" |
-   "new" < INT > "[" Exp() "]" |
-   "new" < ID > "("")" |
-   "!" Exp() |
-   "(" Exp()")" |
+   (< PLUS > | < MINUS > | < MULTIPLY> | < AND > | < LTHEN >)+ Term()Exp() |
+			   Expression() ( "." ( < LENGHT > | <ID > < LPAREN > ExpList() < RPAREN > ) | < LBRACK > Expression() < RBRACK > ) |
+   //Expression() < LBRACK > Expression() < RBRACK > |
+   //Expression()"." < LENGHT > |
+   //Expression()"." <ID > < LPAREN > ExpList() < RPAREN > |
    ""   
   }
+
+void Term():{}
+{
+   < INTEGER_LITERAL > |
+   < BOOL > |
+   < ID > |
+   < THIS > |
+   < NEW > (< ID > "("")" | < INT > "[" Expression() "]") |
+   //< NEW > < INT > "[" Expression() "]" |
+   //< NEW > < ID > "("")" |
+   "!" Expression() |
+   < LPAREN > Expression()< LPAREN >  }
 
 void ExpList():
 {}
