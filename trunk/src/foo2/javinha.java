@@ -5,19 +5,21 @@ public class javinha implements javinhaConstants {
   public static void main(String args []) throws ParseException
   {
     javinha parser = new javinha(System.in);
-    while (true)
+    boolean i=true;
+    while (i)
     {
-      System.out.println("Reading from standard inputES...");
-      System.out.print("Enter an expression like \u005c"1+(2+3)*4;\u005c" :");
+      System.out.println("Lendo da entrada, digite ponto-e-virgula para sair :");
+      System.out.print("Entre com um programa minijava: ");
       try
       {
-        switch (javinha.one_line())
+        switch (javinha.Program())
         {
           case 0 :
-          System.out.println("OK.");
+          System.out.println("Programa OK.");
           break;
           case 1 :
-          System.out.println("Goodbye.");
+          System.out.println("Tchau.");
+          i=false;
           break;
           default :
           break;
@@ -25,13 +27,13 @@ public class javinha implements javinhaConstants {
       }
       catch (Exception e)
       {
-        System.out.println("NOK.");
+        System.out.println("Programa N\u00e3o OK.");
         System.out.println(e.getMessage());
         javinha.ReInit(System.in);
       }
       catch (Error e)
       {
-        System.out.println("Oops.");
+        System.out.println("ERRO!!");
         System.out.println(e.getMessage());
         break;
       }
@@ -42,27 +44,15 @@ public class javinha implements javinhaConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case CLASS:
       MainClass();
-      label_1:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CLASS:
-          ;
-          break;
-        default:
-          jj_la1[0] = jj_gen;
-          break label_1;
-        }
-        ClassDecl();
-      }
-      jj_consume_token(30);
+      ClassDecl();
     {if (true) return 0;}
       break;
-    case 30:
-      jj_consume_token(30);
+    case SCOLON:
+      jj_consume_token(SCOLON);
     {if (true) return 1;}
       break;
     default:
-      jj_la1[1] = jj_gen;
+      jj_la1[0] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -72,65 +62,74 @@ public class javinha implements javinhaConstants {
   static final public void MainClass() throws ParseException {
     jj_consume_token(CLASS);
     jj_consume_token(ID);
-    jj_consume_token(31);
+    jj_consume_token(LCHAVE);
+    jj_consume_token(PUBLIC);
+    jj_consume_token(STATIC);
+    jj_consume_token(VOID);
+    jj_consume_token(MAIN);
+    jj_consume_token(LPAREN);
+    jj_consume_token(STRING);
+    jj_consume_token(LBRACK);
+    jj_consume_token(RBRACK);
     jj_consume_token(ID);
     jj_consume_token(RPAREN);
-    jj_consume_token(32);
+    jj_consume_token(LCHAVE);
     Statement();
-    jj_consume_token(33);
-    jj_consume_token(33);
+    jj_consume_token(RCHAVE);
+    jj_consume_token(RCHAVE);
   }
 
   static final public void ClassDecl() throws ParseException {
-    jj_consume_token(CLASS);
-    jj_consume_token(ID);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case EXTENDS:
-      jj_consume_token(EXTENDS);
-      break;
-    case 34:
-      jj_consume_token(34);
+    case CLASS:
+      jj_consume_token(CLASS);
+      jj_consume_token(ID);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case EXTENDS:
+        jj_consume_token(EXTENDS);
+        jj_consume_token(ID);
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+
+      }
+      jj_consume_token(LCHAVE);
+      VarDecl();
+      label_1:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case PUBLIC:
+          ;
+          break;
+        default:
+          jj_la1[2] = jj_gen;
+          break label_1;
+        }
+        MethodDecl();
+      }
+      jj_consume_token(RCHAVE);
+      ClassDecl();
       break;
     default:
-      jj_la1[2] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+      jj_la1[3] = jj_gen;
+
     }
-    jj_consume_token(ID);
-    jj_consume_token(32);
-    label_2:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case ID:
-      case INT:
-      case BOOLEAN:
-        ;
-        break;
-      default:
-        jj_la1[3] = jj_gen;
-        break label_2;
-      }
-      VarDecl();
-    }
-    label_3:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case PUBLIC:
-        ;
-        break;
-      default:
-        jj_la1[4] = jj_gen;
-        break label_3;
-      }
-      MethodDecl();
-    }
-    jj_consume_token(33);
   }
 
   static final public void VarDecl() throws ParseException {
-    Type();
-    jj_consume_token(ID);
-    jj_consume_token(30);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case BOOLEAN:
+    case INT:
+    case ID:
+      Type();
+      jj_consume_token(ID);
+      jj_consume_token(SCOLON);
+      VarDecl();
+      break;
+    default:
+      jj_la1[4] = jj_gen;
+
+    }
   }
 
   static final public void MethodDecl() throws ParseException {
@@ -140,75 +139,47 @@ public class javinha implements javinhaConstants {
     jj_consume_token(LPAREN);
     FormalList();
     jj_consume_token(RPAREN);
-    jj_consume_token(32);
-    label_4:
+    jj_consume_token(LCHAVE);
+    VarDecl();
+    label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case WHILE:
+      case IF:
+      case SYSTEM:
       case ID:
-      case INT:
-      case BOOLEAN:
+      case LCHAVE:
         ;
         break;
       default:
         jj_la1[5] = jj_gen;
-        break label_4;
-      }
-      VarDecl();
-    }
-    label_5:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case ID:
-      case WHILE:
-      case IF:
-      case 32:
-      case 37:
-        ;
-        break;
-      default:
-        jj_la1[6] = jj_gen;
-        break label_5;
+        break label_2;
       }
       Statement();
     }
-    jj_consume_token(35);
+    jj_consume_token(RETURN);
     Expression();
-    jj_consume_token(30);
-    jj_consume_token(33);
+    jj_consume_token(SCOLON);
+    jj_consume_token(RCHAVE);
   }
 
   static final public void FormalList() throws ParseException {
     Type();
     jj_consume_token(ID);
-    label_6:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 34:
-      case 36:
-        ;
-        break;
-      default:
-        jj_la1[7] = jj_gen;
-        break label_6;
-      }
-      FormalRest();
-    }
+    FormalRest();
   }
 
   static final public void FormalRest() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 36:
-      jj_consume_token(36);
+    case COMMA:
+      jj_consume_token(COMMA);
       Type();
       jj_consume_token(ID);
-      break;
-    case 34:
-      jj_consume_token(34);
+      FormalRest();
       break;
     default:
-      jj_la1[8] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+      jj_la1[6] = jj_gen;
+
     }
   }
 
@@ -221,13 +192,9 @@ public class javinha implements javinhaConstants {
         jj_consume_token(LBRACK);
         jj_consume_token(RBRACK);
         break;
-      case 34:
-        jj_consume_token(34);
-        break;
       default:
-        jj_la1[9] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+        jj_la1[7] = jj_gen;
+
       }
       break;
     case BOOLEAN:
@@ -237,7 +204,7 @@ public class javinha implements javinhaConstants {
       jj_consume_token(ID);
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[8] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -245,25 +212,25 @@ public class javinha implements javinhaConstants {
 
   static final public void Statement() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 32:
-      jj_consume_token(32);
-      label_7:
+    case LCHAVE:
+      jj_consume_token(LCHAVE);
+      label_3:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ID:
         case WHILE:
         case IF:
-        case 32:
-        case 37:
+        case SYSTEM:
+        case ID:
+        case LCHAVE:
           ;
           break;
         default:
-          jj_la1[11] = jj_gen;
-          break label_7;
+          jj_la1[9] = jj_gen;
+          break label_3;
         }
         Statement();
       }
-      jj_consume_token(33);
+      jj_consume_token(RCHAVE);
       break;
     case IF:
       jj_consume_token(IF);
@@ -281,12 +248,16 @@ public class javinha implements javinhaConstants {
       jj_consume_token(RPAREN);
       Statement();
       break;
-    case 37:
-      jj_consume_token(37);
+    case SYSTEM:
+      jj_consume_token(SYSTEM);
+      jj_consume_token(DOT);
+      jj_consume_token(OUT);
+      jj_consume_token(DOT);
+      jj_consume_token(PRINTLN);
       jj_consume_token(LPAREN);
       Exp();
       jj_consume_token(RPAREN);
-      jj_consume_token(30);
+      jj_consume_token(SCOLON);
       break;
     case ID:
       jj_consume_token(ID);
@@ -296,20 +267,16 @@ public class javinha implements javinhaConstants {
         Expression();
         jj_consume_token(RBRACK);
         break;
-      case 34:
-        jj_consume_token(34);
-        break;
       default:
-        jj_la1[12] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+        jj_la1[10] = jj_gen;
+
       }
-      jj_consume_token(38);
+      jj_consume_token(EQUALS);
       Expression();
-      jj_consume_token(30);
+      jj_consume_token(SCOLON);
       break;
     default:
-      jj_la1[13] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -327,7 +294,7 @@ public class javinha implements javinhaConstants {
     case MULTIPLY:
     case AND:
     case LTHEN:
-      label_8:
+      label_4:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case PLUS:
@@ -346,7 +313,7 @@ public class javinha implements javinhaConstants {
           jj_consume_token(LTHEN);
           break;
         default:
-          jj_la1[14] = jj_gen;
+          jj_la1[12] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -359,8 +326,8 @@ public class javinha implements javinhaConstants {
           ;
           break;
         default:
-          jj_la1[15] = jj_gen;
-          break label_8;
+          jj_la1[13] = jj_gen;
+          break label_4;
         }
       }
       Term();
@@ -372,11 +339,11 @@ public class javinha implements javinhaConstants {
     case BOOL:
     case ID:
     case LPAREN:
-    case 40:
+    case 51:
       Expression();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 39:
-        jj_consume_token(39);
+      case DOT:
+        jj_consume_token(DOT);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LENGHT:
           jj_consume_token(LENGHT);
@@ -388,7 +355,7 @@ public class javinha implements javinhaConstants {
           jj_consume_token(RPAREN);
           break;
         default:
-          jj_la1[16] = jj_gen;
+          jj_la1[14] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -399,18 +366,14 @@ public class javinha implements javinhaConstants {
         jj_consume_token(RBRACK);
         break;
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[15] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
-    case 34:
-      jj_consume_token(34);
-      break;
     default:
-      jj_la1[18] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+      jj_la1[16] = jj_gen;
+
     }
   }
 
@@ -427,6 +390,11 @@ public class javinha implements javinhaConstants {
       break;
     case THIS:
       jj_consume_token(THIS);
+      jj_consume_token(DOT);
+      jj_consume_token(ID);
+      jj_consume_token(LPAREN);
+      Expression();
+      jj_consume_token(RPAREN);
       break;
     case NEW:
       jj_consume_token(NEW);
@@ -443,13 +411,13 @@ public class javinha implements javinhaConstants {
         jj_consume_token(RBRACK);
         break;
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
-    case 40:
-      jj_consume_token(40);
+    case 51:
+      jj_consume_token(51);
       Expression();
       break;
     case LPAREN:
@@ -458,7 +426,7 @@ public class javinha implements javinhaConstants {
       jj_consume_token(LPAREN);
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[18] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -472,33 +440,29 @@ public class javinha implements javinhaConstants {
     case BOOL:
     case ID:
     case LPAREN:
-    case 40:
+    case 51:
       Expression();
-      label_9:
+      label_5:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 36:
+        case COMMA:
           ;
           break;
         default:
-          jj_la1[21] = jj_gen;
-          break label_9;
+          jj_la1[19] = jj_gen;
+          break label_5;
         }
         ExpRest();
       }
       break;
-    case 34:
-      jj_consume_token(34);
-      break;
     default:
-      jj_la1[22] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+      jj_la1[20] = jj_gen;
+
     }
   }
 
   static final public void ExpRest() throws ParseException {
-    jj_consume_token(36);
+    jj_consume_token(COMMA);
     Expression();
   }
 
@@ -512,7 +476,7 @@ public class javinha implements javinhaConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[23];
+  static final private int[] jj_la1 = new int[21];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -520,10 +484,10 @@ public class javinha implements javinhaConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x800,0x40000800,0x2000,0x4280000,0x1000,0x4280000,0x18080000,0x0,0x0,0x1000000,0x4280000,0x18080000,0x1000000,0x18080000,0x3e0,0x3e0,0x80400,0x1000000,0x4dc3e0,0x280000,0x4dc000,0x0,0x4dc000,};
+      jj_la1_0 = new int[] {0x20000,0x800000,0x400000,0x20000,0x10000800,0x1006000,0x0,0x0,0x10000800,0x1006000,0x0,0x1006000,0x3e0,0x3e0,0x10000,0x0,0x680003e0,0x10000000,0x68000000,0x0,0x68000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x4,0x0,0x0,0x0,0x21,0x14,0x14,0x4,0x0,0x21,0x4,0x21,0x0,0x0,0x0,0x80,0x104,0x0,0x100,0x10,0x104,};
+      jj_la1_1 = new int[] {0x8,0x0,0x0,0x0,0x2,0x402,0x10,0x100,0x2,0x402,0x100,0x402,0x0,0x0,0x2,0x120,0x80043,0x2,0x80043,0x10,0x80043,};
    }
 
   /** Constructor with InputStream. */
@@ -544,7 +508,7 @@ public class javinha implements javinhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 21; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -558,7 +522,7 @@ public class javinha implements javinhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 21; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -575,7 +539,7 @@ public class javinha implements javinhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 21; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -585,7 +549,7 @@ public class javinha implements javinhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 21; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -601,7 +565,7 @@ public class javinha implements javinhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 21; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -610,7 +574,7 @@ public class javinha implements javinhaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 21; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -661,12 +625,12 @@ public class javinha implements javinhaConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[41];
+    boolean[] la1tokens = new boolean[52];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 23; i++) {
+    for (int i = 0; i < 21; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -678,7 +642,7 @@ public class javinha implements javinhaConstants {
         }
       }
     }
-    for (int i = 0; i < 41; i++) {
+    for (int i = 0; i < 52; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

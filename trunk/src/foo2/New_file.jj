@@ -2,8 +2,34 @@
  * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
  */options{  JDK_VERSION = "1.5";  static = true;}PARSER_BEGIN(javinha)package foo2;
 
-public class javinha{  public static void main(String args []) throws ParseException  {    javinha parser = new javinha(System.in);    while (true)    {      System.out.println("Reading from standard inputES...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (javinha.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        javinha.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(javinha)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < AND : "&&" >
-| < LTHEN : "<" >}
+public class javinha{  public static void main(String args []) throws ParseException  {    javinha parser = new javinha(System.in);    while (true)    {      System.out.println("Lendo da entrada:");      System.out.print("Entre com um programa minijava: ");      try      {        switch (javinha.Program())        {          case 0 :           System.out.println("Programa OK.");          break;          case 1 :           System.out.println("Tchau.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("Programa Não OK.");        System.out.println(e.getMessage());        javinha.ReInit(System.in);      }      catch (Error e)      {        System.out.println("ERRO!!");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(javinha)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < AND : "&&" >
+| < LTHEN : "<" >
+| < EQUALS : "=" >}
+
+TOKEN:
+{
+  < BOOLEAN : "boolean" >
+}
+
+TOKEN:
+{
+  < STRING : "String" >
+}
+
+TOKEN:
+{
+  < WHILE : "while" >
+}
+
+TOKEN:
+{
+  < IF : "if" >
+}
+
+TOKEN:
+{
+  < ELSE : "else" >
+}
 
 TOKEN :
 {
@@ -12,6 +38,26 @@ TOKEN : //Class
 {
   <  CLASS : "class" >
 }
+TOKEN :
+{  <  RETURN : "return" >
+}
+
+TOKEN :
+{
+  < STATIC : "static" >
+}
+
+TOKEN :
+{
+  < VOID : "void" >
+}
+
+
+TOKEN :
+{
+  <  MAIN : "main" >
+}
+
 
 TOKEN :
 {
@@ -19,8 +65,28 @@ TOKEN :
 
 TOKEN:{  <  EXTENDS : "extends" >}
 
+TOKEN:
+{
+  < SYSTEM : "System" >
+}
+
+TOKEN:
+{
+  < OUT : "out" >
+}
+
+TOKEN:
+{
+  < PRINTLN : "println" >
+}
+
 TOKEN:{
   	< THIS : "this" >}
+
+TOKEN:
+{
+  < INT : "int" >
+}
 
 TOKEN:{
   < NEW : "new" >}
@@ -32,11 +98,20 @@ TOKEN: //boolean values
   < BOOL : "true" | "false" >}
 TOKEN:
 {
-  	< ID : ((< LIT >)(< LIT > | "_" | < DIGIT >)*)+>
+  	< ID : ((< LIT >)(< LIT > | "_" | < INTEGER_LITERAL >)*)+>
 	| < #LIT : (([ "A"-"Z" ]) | (["a"-"z"]))+ >}
+
 TOKEN:
 {
-  < INT : "int" >}
+  < SCOLON : ";" >}
+
+TOKEN:
+{
+  < COMMA : "," >}
+
+TOKEN:
+{
+  < DOT : "." >}
 
 TOKEN:
 {
@@ -59,66 +134,81 @@ TOKEN:
 
 TOKEN:
 {
-  < BOOLEAN : "boolean" >
-}
+	  < LCHAVE : "{" >  }
 
 TOKEN:
 {
-  < WHILE : "while" >}
-
-TOKEN:
-{
-  < IF : "if" >
+  < RCHAVE : "}" >
 }
 
-TOKEN:
-{
-  < ELSE : "else" >
+MORE : {
+"//" : IN_SINGLE_LINE_COMMENT
+| <"/**" ~["/"]> : IN_FORMAL_COMMENT
+| "/*" : IN_MULTI_LINE_COMMENT
 }
-int Program() :{}{  MainClass() ( ClassDecl() )* ";"
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN : {
+<SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN : {
+<FORMAL_COMMENT: "*/" > : DEFAULT
+}
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN : {
+<MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+<IN_SINGLE_LINE_COMMENT,IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE : {
+< ~[] >
+}
+
+int Program() :{}{  MainClass() ClassDecl()
   {
     return 0;
   }
 | ";"
   {
     return 1;
-  }}void MainClass() :{}{  < CLASS > < ID > "{ public static void main ( String []" < ID > ")"
-               "{" Statement() "}""}"}
+  }}void MainClass() :{}{  < CLASS > < ID > < LCHAVE > < PUBLIC > < STATIC > < VOID > < MAIN > < LPAREN > < STRING > < LBRACK > < RBRACK > < ID > <RPAREN >
+               < LCHAVE > Statement() < RCHAVE > < RCHAVE >}
 void ClassDecl() :
 {}
 {
   //< CLASS > < ID > ("{" ( VarDecl() )* ( MethodDecl() )* "}") |
-  < CLASS > < ID > (< EXTENDS > | "" ) <ID > "{" ( VarDecl() )* ( MethodDecl() )* "}"
+  < CLASS > < ID > (< EXTENDS > < ID >| {} ) < LCHAVE > VarDecl() ( MethodDecl() )* < RCHAVE > ClassDecl() |
+  {}
   
 
 }
 
 void VarDecl():
 {}
-{				   Type() < ID > ";"
+{				   Type() < ID > < SCOLON > VarDecl() |
+				   {}
 }
 
 void MethodDecl():
 {}
 {	   < PUBLIC > Type() < ID > < LPAREN > FormalList() < RPAREN > 
-               "{" ( VarDecl() )* ( Statement() )* "return" Expression()";""}"             
+               < LCHAVE > VarDecl() ( Statement() )* < RETURN > Expression()< SCOLON >< RCHAVE >             
 }
 
 void FormalList():
 {}
-{	   Type() < ID > ( FormalRest() )*
+{	   Type() < ID > FormalRest()
 }
 
 void FormalRest():
 {}
 {
-	   ","Type()< ID > |
-	   ""
+	   < COMMA > Type()< ID > FormalRest() |
+	   {}
 }
 
 void Type():
 {}
-{   < INT > ("[""]" | "") |
+{   < INT > ( < LBRACK > < RBRACK > | {} ) |
    < BOOLEAN > |
    //< INT > |
    < ID >
@@ -126,11 +216,11 @@ void Type():
 
 void Statement():
 {}
-{  "{" ( Statement() )* "}" |
+{  < LCHAVE > ( Statement() )* < RCHAVE > |
   < IF > < LPAREN > Expression() < RPAREN > Statement() < ELSE > Statement() |
   < WHILE > < LPAREN > Expression() < RPAREN >  Statement() |
-  "System.out.println" "(" Exp() ")" ";" |
-  < ID > ("[" Expression() "]" | "" ) "=" Expression()";"
+  < SYSTEM > < DOT > < OUT > < DOT > < PRINTLN > < LPAREN > Exp() < RPAREN > < SCOLON > |
+  < ID > (< LBRACK > Expression() < RBRACK > | {} ) < EQUALS > Expression()< SCOLON >
   //< ID > "=" Expression()";" |
   //< ID > "[" Expression() "]" "=" Expression()";"
 }
@@ -145,11 +235,11 @@ void Exp():
 {}
 {
    (< PLUS > | < MINUS > | < MULTIPLY> | < AND > | < LTHEN >)+ Term()Exp() |
-			   Expression() ( "." ( < LENGHT > | <ID > < LPAREN > ExpList() < RPAREN > ) | < LBRACK > Expression() < RBRACK > ) |
+			   Expression() ( < DOT > ( < LENGHT > | <ID > < LPAREN > ExpList() < RPAREN > ) | < LBRACK > Expression() < RBRACK > ) |
    //Expression() < LBRACK > Expression() < RBRACK > |
    //Expression()"." < LENGHT > |
    //Expression()"." <ID > < LPAREN > ExpList() < RPAREN > |
-   ""   
+   {}   
   }
 
 void Term():{}
@@ -157,8 +247,8 @@ void Term():{}
    < INTEGER_LITERAL > |
    < BOOL > |
    < ID > |
-   < THIS > |
-   < NEW > (< ID > "("")" | < INT > "[" Expression() "]") |
+   < THIS > < DOT > < ID > < LPAREN > Expression() < RPAREN > |
+   < NEW > (< ID > < LPAREN > < RPAREN > | < INT > < LBRACK > Expression() < RBRACK >) |
    //< NEW > < INT > "[" Expression() "]" |
    //< NEW > < ID > "("")" |
    "!" Expression() |
@@ -168,10 +258,10 @@ void ExpList():
 {}
 {
 	   Expression() ( ExpRest() )* |
-   "" }
+   {} }
 
 void ExpRest():
 {}
 {
-   "," Expression()
+   < COMMA > Expression()
      }
