@@ -8,88 +8,31 @@ public class javinha{  public static void main(String args []) throws ParseExc
 
 TOKEN:
 {
-  < BOOLEAN : "boolean" >
+  < BOOLEAN : "boolean" > |
+  < STRING : "String" > |
+  < WHILE : "while" > |
+  < IF : "if" > |
+  < ELSE : "else" > |
+  	< LENGTH : "length" > |  < CLASS : "class" > |
+  < RETURN : "return" > |
+  < STATIC : "static" > |
+  < VOID : "void" > |
+  < MAIN : "main" > |
+  < PUBLIC : "public"> |  < EXTENDS : "extends" > |  < SYSTEM : "System" > |
+  < OUT : "out" > |
+  < PRINTLN : "println" > |
+  	< THIS : "this" > |  < INT : "int" > |
+  < NEW : "new" > |  < SCOLON : ";" > |
+  < COMMA : "," > |
+  < DOT : "." > |
+  < EXCLAM : "!" > |
+  < LPAREN : "(" > |
+  < RPAREN : ")" > |
+  < LBRACK: "[" > |
+  < RBRACK : "]" > |
+  < LCHAVE : "{" > | 
+  < RCHAVE : "}" > 
 }
-
-TOKEN:
-{
-  < STRING : "String" >
-}
-
-TOKEN:
-{
-  < WHILE : "while" >
-}
-
-TOKEN:
-{
-  < IF : "if" >
-}
-
-TOKEN:
-{
-  < ELSE : "else" >
-}
-
-TOKEN :
-{
-  	< LENGHT : "lenght" >} 
-TOKEN : //Class
-{
-  <  CLASS : "class" >
-}
-TOKEN :
-{  <  RETURN : "return" >
-}
-
-TOKEN :
-{
-  < STATIC : "static" >
-}
-
-TOKEN :
-{
-  < VOID : "void" >
-}
-
-
-TOKEN :
-{
-  <  MAIN : "main" >
-}
-
-
-TOKEN :
-{
-  < PUBLIC : "public">}
-
-TOKEN:{  <  EXTENDS : "extends" >}
-
-TOKEN:
-{
-  < SYSTEM : "System" >
-}
-
-TOKEN:
-{
-  < OUT : "out" >
-}
-
-TOKEN:
-{
-  < PRINTLN : "println" >
-}
-
-TOKEN:{
-  	< THIS : "this" >}
-
-TOKEN:
-{
-  < INT : "int" >
-}
-
-TOKEN:{
-  < NEW : "new" >}
 
 TOKEN : //integers{  < INTEGER_LITERAL : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >}
 
@@ -101,45 +44,6 @@ TOKEN:
   	< ID : ((< LIT >)(< LIT > | "_" | < INTEGER_LITERAL >)*)+>
 	| < #LIT : (([ "A"-"Z" ]) | (["a"-"z"]))+ >}
 
-TOKEN:
-{
-  < SCOLON : ";" >}
-
-TOKEN:
-{
-  < COMMA : "," >}
-
-TOKEN:
-{
-  < DOT : "." >}
-
-TOKEN:
-{
-  < LPAREN : "(" >}
-
-TOKEN:
-{
-  < RPAREN : ")" >
-}
-
-TOKEN:
-{
-  < LBRACK: "[" >
-}
-
-TOKEN:
-{
-  < RBRACK : "]" >
-}
-
-TOKEN:
-{
-	  < LCHAVE : "{" >  }
-
-TOKEN:
-{
-  < RCHAVE : "}" >
-}
 
 MORE : {
 "//" : IN_SINGLE_LINE_COMMENT
@@ -176,7 +80,7 @@ void ClassDecl() :
 {}
 {
   //< CLASS > < ID > ("{" ( VarDecl() )* ( MethodDecl() )* "}") |
-  < CLASS > < ID > (< EXTENDS > < ID >| {} ) < LCHAVE > VarDecl() ( MethodDecl() )* < RCHAVE > ClassDecl() |
+  < CLASS > < ID > (< EXTENDS > < ID > | {} ) < LCHAVE > ( VarDecl() )* ( MethodDecl() )* < RCHAVE > ClassDecl() |
   {}
   
 
@@ -184,25 +88,25 @@ void ClassDecl() :
 
 void VarDecl():
 {}
-{				   Type() < ID > < SCOLON > VarDecl() |
-				   {}
+{				   Type() < ID > < SCOLON >
 }
 
 void MethodDecl():
 {}
 {	   < PUBLIC > Type() < ID > < LPAREN > FormalList() < RPAREN > 
-               < LCHAVE > VarDecl() ( Statement() )* < RETURN > Expression()< SCOLON >< RCHAVE >             
+   < LCHAVE > VarDecl() ( Statement() )* < RETURN > Expression()< SCOLON > < RCHAVE >             
 }
 
 void FormalList():
 {}
-{	   Type() < ID > FormalRest()
+{	   Type() < ID > FormalRest() |
+	   {}
 }
 
 void FormalRest():
 {}
 {
-	   < COMMA > Type()< ID > FormalRest() |
+	   < COMMA > Type() < ID > FormalRest() |
 	   {}
 }
 
@@ -219,7 +123,7 @@ void Statement():
 {  < LCHAVE > ( Statement() )* < RCHAVE > |
   < IF > < LPAREN > Expression() < RPAREN > Statement() < ELSE > Statement() |
   < WHILE > < LPAREN > Expression() < RPAREN >  Statement() |
-  < SYSTEM > < DOT > < OUT > < DOT > < PRINTLN > < LPAREN > Exp() < RPAREN > < SCOLON > |
+  < SYSTEM > < DOT > < OUT > < DOT > < PRINTLN > < LPAREN > Expression() < RPAREN > < SCOLON > |
   < ID > (< LBRACK > Expression() < RBRACK > | {} ) < EQUALS > Expression()< SCOLON >
   //< ID > "=" Expression()";" |
   //< ID > "[" Expression() "]" "=" Expression()";"
@@ -228,40 +132,53 @@ void Statement():
 void Expression():
 {}
 {
-  Term() Exp()}  
+  Term() Exp()
+  }  
 
+void Exp2():
+{}
+{
+   < LENGTH > |
+   <ID > < LPAREN > ExpList() < RPAREN > 
+}
 
 void Exp():
 {}
 {
    (< PLUS > | < MINUS > | < MULTIPLY> | < AND > | < LTHEN >)+ Term()Exp() |
-			   Expression() ( < DOT > ( < LENGHT > | <ID > < LPAREN > ExpList() < RPAREN > ) | < LBRACK > Expression() < RBRACK > ) |
-   //Expression() < LBRACK > Expression() < RBRACK > |
-   //Expression()"." < LENGHT > |
-   //Expression()"." <ID > < LPAREN > ExpList() < RPAREN > |
+   < LBRACK > Expression() < RBRACK > | 
+			   			< DOT > Exp2() |
+			   			   
    {}   
-  }
+}
+
+
+void Exp3():
+{}
+{
+    < ID > < LPAREN > < RPAREN > |
+    < INT > < LBRACK > Expression() < RBRACK > 
+}
 
 void Term():{}
 {
+   			   
    < INTEGER_LITERAL > |
    < BOOL > |
    < ID > |
-   < THIS > < DOT > < ID > < LPAREN > Expression() < RPAREN > |
-   < NEW > (< ID > < LPAREN > < RPAREN > | < INT > < LBRACK > Expression() < RBRACK >) |
-   //< NEW > < INT > "[" Expression() "]" |
-   //< NEW > < ID > "("")" |
-   "!" Expression() |
-   < LPAREN > Expression()< LPAREN >  }
+   < THIS > |
+   < NEW > Exp3() |
+   < EXCLAM > Expression() |
+   < LPAREN > Expression() < RPAREN >
+     }
 
 void ExpList():
 {}
 {
-	   Expression() ( ExpRest() )* |
-   {} }
+	   Expression()( ExpRest() )*
+	   {}}
 
 void ExpRest():
 {}
 {
-   < COMMA > Expression()
-     }
+   < COMMA > Expression()     }

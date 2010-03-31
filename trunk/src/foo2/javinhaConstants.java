@@ -33,7 +33,7 @@ public interface javinhaConstants {
   /** RegularExpression Id. */
   int ELSE = 15;
   /** RegularExpression Id. */
-  int LENGHT = 16;
+  int LENGTH = 16;
   /** RegularExpression Id. */
   int CLASS = 17;
   /** RegularExpression Id. */
@@ -61,39 +61,41 @@ public interface javinhaConstants {
   /** RegularExpression Id. */
   int NEW = 29;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 30;
+  int SCOLON = 30;
   /** RegularExpression Id. */
-  int DIGIT = 31;
+  int COMMA = 31;
   /** RegularExpression Id. */
-  int BOOL = 32;
+  int DOT = 32;
   /** RegularExpression Id. */
-  int ID = 33;
+  int EXCLAM = 33;
   /** RegularExpression Id. */
-  int LIT = 34;
+  int LPAREN = 34;
   /** RegularExpression Id. */
-  int SCOLON = 35;
+  int RPAREN = 35;
   /** RegularExpression Id. */
-  int COMMA = 36;
+  int LBRACK = 36;
   /** RegularExpression Id. */
-  int DOT = 37;
+  int RBRACK = 37;
   /** RegularExpression Id. */
-  int LPAREN = 38;
+  int LCHAVE = 38;
   /** RegularExpression Id. */
-  int RPAREN = 39;
+  int RCHAVE = 39;
   /** RegularExpression Id. */
-  int LBRACK = 40;
+  int INTEGER_LITERAL = 40;
   /** RegularExpression Id. */
-  int RBRACK = 41;
+  int DIGIT = 41;
   /** RegularExpression Id. */
-  int LCHAVE = 42;
+  int BOOL = 42;
   /** RegularExpression Id. */
-  int RCHAVE = 43;
+  int ID = 43;
   /** RegularExpression Id. */
-  int SINGLE_LINE_COMMENT = 47;
+  int LIT = 44;
   /** RegularExpression Id. */
-  int FORMAL_COMMENT = 48;
+  int SINGLE_LINE_COMMENT = 48;
   /** RegularExpression Id. */
-  int MULTI_LINE_COMMENT = 49;
+  int FORMAL_COMMENT = 49;
+  /** RegularExpression Id. */
+  int MULTI_LINE_COMMENT = 50;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -122,7 +124,7 @@ public interface javinhaConstants {
     "\"while\"",
     "\"if\"",
     "\"else\"",
-    "\"lenght\"",
+    "\"length\"",
     "\"class\"",
     "\"return\"",
     "\"static\"",
@@ -136,28 +138,28 @@ public interface javinhaConstants {
     "\"this\"",
     "\"int\"",
     "\"new\"",
-    "<INTEGER_LITERAL>",
-    "<DIGIT>",
-    "<BOOL>",
-    "<ID>",
-    "<LIT>",
     "\";\"",
     "\",\"",
     "\".\"",
+    "\"!\"",
     "\"(\"",
     "\")\"",
     "\"[\"",
     "\"]\"",
     "\"{\"",
     "\"}\"",
+    "<INTEGER_LITERAL>",
+    "<DIGIT>",
+    "<BOOL>",
+    "<ID>",
+    "<LIT>",
     "\"//\"",
-    "<token of kind 45>",
+    "<token of kind 46>",
     "\"/*\"",
     "<SINGLE_LINE_COMMENT>",
     "\"*/\"",
     "\"*/\"",
-    "<token of kind 50>",
-    "\"!\"",
+    "<token of kind 51>",
   };
 
 }
