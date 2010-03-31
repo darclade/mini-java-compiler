@@ -5,7 +5,8 @@ public class javinha implements javinhaConstants {
   public static void main(String args []) throws ParseException
   {
     javinha parser = new javinha(System.in);
-    while (true)
+                    boolean loop=true;
+    while (loop)
     {
       System.out.println("Lendo da entrada:");
       System.out.print("Entre com um programa minijava: ");
@@ -15,9 +16,11 @@ public class javinha implements javinhaConstants {
         {
           case 0 :
           System.out.println("Programa OK.");
+          javinha.ReInit(System.in);
           break;
           case 1 :
           System.out.println("Tchau.");
+          loop=false;
           break;
           default :
           break;
