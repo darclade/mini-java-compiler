@@ -83,7 +83,7 @@ void ClassDecl() :
 {}
 {
   //< CLASS > < ID > ("{" ( VarDecl() )* ( MethodDecl() )* "}") |
-  < CLASS > < ID > (< EXTENDS > < ID > | {} ) < LCHAVE > ( VarDecl() )* ( MethodDecl() )* < RCHAVE > ClassDecl() |
+  < CLASS > < ID > (< EXTENDS > < ID > | {} ) < LCHAVE > VarDecl() ( MethodDecl() )* < RCHAVE > ClassDecl() |
   {}
   
 
@@ -91,14 +91,16 @@ void ClassDecl() :
 
 void VarDecl():
 {}
-{				   Type() < ID > < SCOLON >
+{				   Type() < ID > < SCOLON > VarDecl() |
+				   {}				 				     
 }
 
 void MethodDecl():
 {}
 {	   < PUBLIC > Type() < ID > < LPAREN > FormalList() < RPAREN > 
-   < LCHAVE > VarDecl() ( Statement() )* < RETURN > Expression()< SCOLON > < RCHAVE >             
+   < LCHAVE > VarDecl() Statement() < RETURN > Expression()< SCOLON > < RCHAVE >             
 }
+
 
 void FormalList():
 {}
@@ -111,7 +113,7 @@ void FormalRest():
 {
 	   < COMMA > Type() < ID > FormalRest() |
 	   {}
-}
+	}
 
 void Type():
 {}
@@ -123,19 +125,30 @@ void Type():
 
 void Statement():
 {}
-{  < LCHAVE > ( Statement() )* < RCHAVE > |
+{
+  Stmt()Statement() |
+  {}
+}
+void Stmt():
+{}
+{
+  < LCHAVE >  Statement() < RCHAVE > |
+  < ID > StmtBrack() < EQUALS > Expression() < SCOLON > |
   < IF > < LPAREN > Expression() < RPAREN > Statement() < ELSE > Statement() |
   < WHILE > < LPAREN > Expression() < RPAREN >  Statement() |
-  < SYSTEM > < DOT > < OUT > < DOT > < PRINTLN > < LPAREN > Expression() < RPAREN > < SCOLON > |
-  < ID > (< LBRACK > Expression() < RBRACK > | {} ) < EQUALS > Expression()< SCOLON >
-  //< ID > "=" Expression()";" |
-  //< ID > "[" Expression() "]" "=" Expression()";"
-}
-
+  < SYSTEM > < DOT > < OUT > < DOT > < PRINTLN > < LPAREN > Expression() < RPAREN > < SCOLON > 
+  }
+void StmtBrack():
+{}
+{
+  < LBRACK > Expression() < RBRACK > |
+  {} }
+ 
 void Expression():
 {}
 {
-  Term() Exp()
+  Term() Exp() |
+  {}
   }  
 
 void Exp2():
